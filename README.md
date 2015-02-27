@@ -1,4 +1,4 @@
-# slack-rtm
+# slack-rtm [![ci-status](https://travis-ci.org/casidiablo/slack-rtm.svg?branch=master)](https://travis-ci.org/casidiablo/slack-rtm)
 
 A Clojure library to interact with the [Slack][1] [Real Time Messaging API][2].
 It's powered by [`clj-slack`][3] and `core.async`.
