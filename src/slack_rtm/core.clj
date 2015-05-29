@@ -1,10 +1,10 @@
 (ns slack-rtm.core
   (:require [clj-slack.rtm :as rtm]
+            [clj-slack.core :refer [slack-request]]
             [clojure.core.async :as async
              :refer [chan pub sub go >! <! go-loop close! unsub unsub-all]]
             [clojure.data.json :as json]
-            [gniazdo.core :as ws])
-  (:use [clj-slack.core :only [slack-request]]))
+            [gniazdo.core :as ws]))
 
  ;; private utility methods
 
@@ -115,6 +115,9 @@
   - :websocket-publication a publication object you can subscribe to in order to
   get raw callbacks from the websocket client
 
+  - :start the response from the Slack API rtm.start method, which contains data
+  about the current state of the team: https://api.slack.com/methods/rtm.start
+
   initial-subs can be provided as :topic ch-or-fn.
 
   topic can be a websocket listener event (that will be subscribed
@@ -140,14 +143,16 @@
                                 #(or (:type %) (if-not (:ok %) "error")))
         ;; subscribe initial subscribers
         _ (sub-initial-subscribers websocket-publication events-publication initial-subs)
+        ;; save the response from rtm/start to pass back to caller
+        start (-> connection-map rtm/start)
         ;; connect to the RTM API via websocket session and
         ;; get a channel that can be used to send data to slack
-        dispatcher (-> connection-map
-                       rtm/start
+        dispatcher (-> start
                        :url
                        (ws-connect callback-ch)
                        spin-dispatcher-channel)]
-    {:websocket-publication websocket-publication
+    {:start start
+     :websocket-publication websocket-publication
      :events-publication events-publication
      :dispatcher dispatcher}))
 
