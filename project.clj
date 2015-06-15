@@ -1,4 +1,4 @@
-(defproject slack-rtm "0.1.0-SNAPSHOT"
+(defproject slack-rtm "0.1.0"
   :description "Slack Real Time Messaging API for Clojure"
   :url "http://github.com/casidiablo/slack-rtm"
   :license {:name "Eclipse Public License"
