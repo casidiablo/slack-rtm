@@ -32,7 +32,11 @@ Include `[slack-rtm "0.1.0"]` in your dependencies. Get a
 
 ```
 
-The map returned by `connect` has three items:
+The map returned by `connect` has four items:
+
+- `:start` is map containing the response from the Slack API
+  [rtm.start](https://api.slack.com/methods/rtm.start)
+  method, which contains data about the current state of the team:
 
 - `:events-publication` is a `core.async` [publication][5] that you can
  use to subscribe to the different kind of [slack event types][6]. You
@@ -41,7 +45,7 @@ The map returned by `connect` has three items:
  use the `sub-to-event` function that allows you to subscribe both a
  `core.async` channel or an unary function; it also allows you to
  subscribe using keywords (e.g. `:message`, `:im_open`, etc.).
- 
+
 - `:dispatcher` is a `core.async` channel you can use to send events to
 slack. You can use `core.async` primitive methods (`>!!`, `>!`, `put!`),
 or better yet use `send-event` which automatically adds an `:id` to
