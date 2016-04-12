@@ -61,7 +61,7 @@ Refer to [stylefruits/gniazdo][7] for information on these.
 Using `(connect "token")` will connect right away, which means you can
 miss events (like the `hello` event) by the time you subscribe. You can
 subscribe to any event before the connection has been performed by
-specifying a list of `:topics channel-or-funciton` pairs to `connect`
+specifying a list of `:topics channel-or-function` pairs to `connect`
 like this:
 
 ```clojure
