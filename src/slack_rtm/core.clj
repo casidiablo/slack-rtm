@@ -4,6 +4,7 @@
             [clojure.core.async :as async
              :refer [chan pub sub go >! <! go-loop close! unsub unsub-all]]
             [clojure.data.json :as json]
+            [clojure.test]
             [gniazdo.core :as ws]))
 
  ;; private utility methods
