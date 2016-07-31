@@ -67,7 +67,7 @@ like this:
 ```clojure
 (connect "token"
          :hello #(prn %)
-         :on-close (fn [status reason] (prn status reason)))
+         :on-close (fn [{:keys [status reason]}] (prn status reason)))
 ```
 
 ## License
