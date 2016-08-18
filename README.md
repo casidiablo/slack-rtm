@@ -70,6 +70,23 @@ like this:
          :on-close (fn [{:keys [status reason]}] (prn status reason)))
 ```
 
+### main: wait until the connection is closed
+
+If you are starting the client from a `-main` function then you likely want to wait until the connection is closed before exiting from the function. (All the threads are started in the background and do not prevent main and thus the application from exiting.) You might do something like this:
+
+```clojure
+(defn -main []
+  (let [{:keys [events-publication dispatcher start]} (connect)]
+    ; ...
+    (let [c (sub-to-event events-publication :message #(msg-receiver dispatcher %))]
+      (loop []
+        (a/<!! c)
+        (recur)))))
+```
+
+Explanation: `sub-to-event` returns a channel that gets closed when the connection is closed.
+(You could also use `go-loop` or listen for the `:on-close` event ...)
+
 ## License
 
 Distributed under the WTFPL.
