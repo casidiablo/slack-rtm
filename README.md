@@ -70,6 +70,22 @@ like this:
          :on-close (fn [{:keys [status reason]}] (prn status reason)))
 ```
 
+## Running Tests
+
+Create file ```.slack.clj``` to your home directory with following content:
+
+```clojure
+{:slack-rtm "your-legacy-token-her"}
+```
+
+You can get yours from [https://api.slack.com/custom-integrations/legacy-tokens](https://api.slack.com/custom-integrations/legacy-tokens).
+
+Run the test suite:
+
+```bash
+lein test
+```
+
 ## License
 
 Distributed under the WTFPL.
