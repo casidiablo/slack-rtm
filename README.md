@@ -5,7 +5,7 @@ It's powered by [`clj-slack`][3] and `core.async`.
 
 ## Usage
 
-Include `[slack-rtm "0.1.3"]` in your dependencies. Get a
+Include `[slack-rtm "0.1.4"]` in your dependencies. Get a
 [Slack token][4] (it can be a bot token too).  Then:
 
 ```clojure
