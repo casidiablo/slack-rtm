@@ -70,7 +70,24 @@ like this:
          :on-close (fn [{:keys [status reason]}] (prn status reason)))
 ```
 
-### main: wait until the connection is closed
+## Running Tests
+
+Export a `TOKEN` environment variable with your Slack token or create file
+```.slack.clj``` to your home directory with following content:
+
+```clojure
+{:slack-rtm "your-legacy-token-here"}
+```
+
+You can get yours from [https://api.slack.com/custom-integrations/legacy-tokens](https://api.slack.com/custom-integrations/legacy-tokens).
+
+Run the test suite:
+
+```bash
+lein test
+```
+
+### Wait until the connection is closed
 
 If you are starting the client from a `-main` function then you likely want to wait until the connection is closed before exiting from the function. (All the threads are started in the background and do not prevent main and thus the application from exiting.) You might do something like this:
 
