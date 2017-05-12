@@ -146,6 +146,7 @@
         _ (sub-initial-subscribers websocket-publication events-publication initial-subs)
         ;; save the response from rtm/start to pass back to caller
         start (-> connection-map rtm/start)
+        _ (when (start :error) (throw (new RuntimeException (str "Failed to start connection: " start))))
         ;; connect to the RTM API via websocket session and
         ;; get a channel that can be used to send data to slack
         dispatcher (-> start
