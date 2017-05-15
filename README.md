@@ -5,13 +5,14 @@ It's powered by [`clj-slack`][3] and `core.async`.
 
 ## Usage
 
-Include `[slack-rtm "0.1.5"]` in your dependencies. Get a
+Include `[slack-rtm "0.1.6"]` in your dependencies. Get a
 [Slack token][4] (it can be a bot token too).  Then:
 
 ```clojure
 (use 'slack-rtm.core)
 
 ;; connect to the Real Time Messaging API
+;; you can also use (start "your-token") see difference here: https://api.slack.com/rtm
 (def rtm-conn (connect "your-token"))
 
 ;; rtm-conn is a map with publications and channels that

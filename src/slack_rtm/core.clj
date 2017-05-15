@@ -101,7 +101,7 @@
      :token token-or-map}
     token-or-map))
 
-(defn connect
+(defn- internal-connect
   "Connects to a Real Time Messaging session via WebSockets using the provided connection,
   which can be an API token or a map like this: {:api-url
   \"https://slack.com/api\" :token token-or-map}.
@@ -132,7 +132,7 @@
 
   ch-or-fn is the channel to subscribe or a function to invoke for each
   event produced by the publication"
-  [connection & {:as initial-subs}]
+  [conn-type connection & {:as initial-subs}]
   (let [connection-map (build-connection-map connection)
         ;; create a publication of websocket raw callbacks
         callback-ch (chan)
@@ -145,7 +145,7 @@
         ;; subscribe initial subscribers
         _ (sub-initial-subscribers websocket-publication events-publication initial-subs)
         ;; save the response from rtm/start to pass back to caller
-        start (-> connection-map rtm/start)
+        start (if (= conn-type :start-url) (rtm/start connection-map) (rtm/connect connection-map))
         _ (when (start :error) (throw (new RuntimeException (str "Failed to start connection: " start))))
         ;; connect to the RTM API via websocket session and
         ;; get a channel that can be used to send data to slack
@@ -157,6 +157,12 @@
      :websocket-publication websocket-publication
      :events-publication events-publication
      :dispatcher dispatcher}))
+
+(defn connect [connection & initial-subs]
+  (apply internal-connect :connect-url connection initial-subs))
+
+(defn start [connection & initial-subs]
+  (apply internal-connect :start-url connection initial-subs))
 
 (defn send-event
   "Sends a RTM event to slack. Send :close to close the connection."
