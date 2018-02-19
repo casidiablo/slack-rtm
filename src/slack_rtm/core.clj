@@ -70,8 +70,11 @@
   "Creates a channel that maps to JSON the messages of ch"
   [ch]
   (async/map
-   #(-> % :message
-        (json/read-str :key-fn clojure.core/keyword))
+   #(try
+      (-> % :message
+          (json/read-str :key-fn clojure.core/keyword))
+      (catch Throwable e
+        {:type "exception" :error e}))
    [ch]))
 
 (defn- apply-if
