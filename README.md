@@ -105,6 +105,15 @@ If you are starting the client from a `-main` function then you likely want to w
 Explanation: `sub-to-event` returns a channel that gets closed when the connection is closed.
 (You could also use `go-loop` or listen for the `:on-close` event ...)
 
+## Deploying
+
+
+``` bash
+export GPG_TTY=$(tty)
+CLOJARS_USERNAME=cristian CLOJARS_PASSWORD=*** lein deploy clojars
+```
+
+
 ## License
 
 Distributed under the WTFPL.
