@@ -1,4 +1,6 @@
 (ns slack-rtm.core
+  (:import (org.eclipse.jetty.websocket.client WebSocketClient)
+           (org.eclipse.jetty.util.ssl SslContextFactory))
   (:require [clj-slack.rtm :as rtm]
             [clj-slack.core :refer [slack-request]]
             [clojure.core.async :as async
@@ -26,12 +28,26 @@
            (recur))))
      ch))
 
+(defn- client
+  "Create a new instance of `WebSocketClient` with max-text-message-size.
+   (for https://github.com/stalefruits/gniazdo/issues/22)"
+  [max-text-message-size]
+  (let [client (WebSocketClient. (SslContextFactory.))]
+    (try
+      (when max-text-message-size
+        (.setMaxTextMessageSize (.getPolicy client) max-text-message-size))
+      (doto client .start)
+      (catch Throwable ex
+        (.stop client)
+        (throw ex)))))
+
 (defn- ws-connect
   "Connects to the provided WebSocket URL and forward all listener
   events to the provided channel."
-  [url callback-ch]
+  [url callback-ch {:keys [max-text-message-size] :as connection}]
   (ws/connect
    url
+   :client (client max-text-message-size)
    :on-connect #(go (>! callback-ch {:type :on-connect
                                      :session %}))
 
@@ -101,7 +117,8 @@
 (defn- build-connection-map [token-or-map]
   (if (string? token-or-map)
     {:api-url "https://slack.com/api"
-     :token token-or-map}
+     :token token-or-map
+     :max-text-message-size 65536}
     token-or-map))
 
 (defn- internal-connect
@@ -154,7 +171,7 @@
         ;; get a channel that can be used to send data to slack
         dispatcher (-> start
                        :url
-                       (ws-connect callback-ch)
+                       (ws-connect callback-ch connection)
                        spin-dispatcher-channel)]
     {:start start
      :websocket-publication websocket-publication
